@@ -1,5 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 import Grid, { ResultItem } from './Grid';
+import FormInput from './FormInput';
 
 interface FormData {
   name: string;
@@ -50,18 +51,17 @@ export default function ReactForm() {
     dispatch({ type: 'reset' });
 
   };
-  const refNameInput = useRef<any>();
-  const focusNameInput = () => {
-    refNameInput.current.focus();
+  const nameRef = useRef<HTMLInputElement>(null);
+  const emailRef = useRef<HTMLInputElement>(null);
+  const passRef = useRef<HTMLInputElement>(null);
+  const focusHandler = (e: any) => {
+    switch (e.target.name) {
+      case 'name': nameRef.current?.focus(); break;
+      case 'email': emailRef.current?.focus(); break;
+      case 'password': passRef.current?.focus(); break;
+    }
   }
-  const refEmailInput = useRef<any>();
-  const focusEmailInput = () => {
-    refEmailInput.current.focus();
-  }
-  const refPassInput = useRef<any>();
-  const focusPasswordInput = () => {
-    refPassInput.current.focus();
-  }
+
   const [searchText, setSearchText] = useState('');
   const data = useApi<ResultItem>(searchText);
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -87,24 +87,13 @@ export default function ReactForm() {
     <React.Fragment>
       <div>
         <p>part 1</p>
-        <label>
-          Name:
-          <input ref={refNameInput} name='name' onChange={handleInpuChange} value={formState.name} placeholder="name" type="text" />
-        </label>
-        <label>
-          Email:
-          <input ref={refEmailInput} name='email' onChange={handleInpuChange} value={formState.email} placeholder="email" type="text" />
-        </label>
-
-
-        <label>
-          Password:
-          <input ref={refPassInput} name='password' onChange={handleInpuChange} value={formState.password} placeholder="password" type="text" />
-        </label>
+        <FormInput ref={nameRef} name="name" value={formState.name} onChange={handleInpuChange} />
+        <FormInput ref={emailRef} name="email" value={formState.email} onChange={handleInpuChange} />
+        <FormInput ref={passRef} name="password" value={formState.password} onChange={handleInpuChange} />
         <hr />
-        <button onClick={focusNameInput}>Focus Name Input</button>
-        <button onClick={focusEmailInput}>Focus Email Input</button>
-        <button onClick={focusPasswordInput}>Focus Password Input</button>
+        <button name='name' onClick={focusHandler}>Focus Name Input</button>
+        <button name='email' onClick={focusHandler}>Focus Email Input</button>
+        <button name='password' onClick={focusHandler}>Focus Password Input</button>
         <hr />
         <button onClick={handleSubmit}>Submit</button>
         <button onClick={handleReset}>Reset</button>
